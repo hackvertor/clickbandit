@@ -1,7 +1,7 @@
 /* Copyright PortSwigger Ltd. All rights reserved. Usage is subject to the Burp Suite license terms. See https://portswigger.net for more details. */
 !function(){
 	var initialZoomFactor = '1.0', win, doc, width, height, clicks = [];
-	function addClickTrap(element) {	
+	function addClickTrap(element) {
 		var clickTrap = doc.createElement('div'), cords = findPos(element);
 		clickTrap.style.backgroundColor = 'none';
 		clickTrap.style.border = 'none';
@@ -9,9 +9,9 @@
 		clickTrap.style.left = cords[0] + 'px';
 		clickTrap.style.top = cords[1] + 'px';
 		clickTrap.style.width = element.offsetWidth + 'px';
-		clickTrap.style.height = element.offsetHeight + 'px';		
+		clickTrap.style.height = element.offsetHeight + 'px';
 		if(element.zIndex || element.zIndex === '0') {
-			clickTrap.style.zIndex = +element.zIndex+1;	
+			clickTrap.style.zIndex = +element.zIndex+1;
 		}
 		clickTrap.style.opacity = '0.5';
 		clickTrap.style.cursor = 'pointer';
@@ -82,8 +82,8 @@
 	    return [left,top];
   	}
 	function generatePoc(config) {
-		var html = '', child = '', elementWidth = 1, elementHeight = 1, maxWidth = width, maxHeight = height, cords, zoomIncrement = 1, desiredX = 200, desiredY = 200, parentOffsetWidth, parentOffsetHeight, 
-			element = config.element, x = config.x, y = config.y, pixelMode = false;				
+		var html = '', child = '', elementWidth = 1, elementHeight = 1, maxWidth = width, maxHeight = height, cords, zoomIncrement = 1, desiredX = 200, desiredY = 200, parentOffsetWidth, parentOffsetHeight,
+			element = config.element, x = config.x, y = config.y, pixelMode = false;
 		if(config.clickTracking) {
 			elementWidth = config.clickTracking[0].width;
 			elementHeight = config.clickTracking[0].height;
@@ -100,13 +100,13 @@
 				x = cords[0];
 				y = cords[1];
 				zoomIncrement = 1;
-			} else {				
+			} else {
 				zoomIncrement = 50;
 				pixelMode = true;
 			}
 		}
 		parentOffsetWidth = desiredX - x;
-		parentOffsetHeight = desiredY - y;			
+		parentOffsetHeight = desiredY - y;
 		child = btoa('<script>window.addEventListener("message", function(e){ var data, childFrame = document.getElementById("childFrame"); try { data = JSON.parse(e.data); } catch(e){ data = {}; } if(!data.clickbandit){ return false; } childFrame.style.width = data.docWidth+"px";childFrame.style.height = data.docHeight+"px";childFrame.style.left = data.left+"px";childFrame.style.top = data.top+"px";}, false);<\/script><iframe src="'+htmlEscape(self.location)+'" scrolling="no" style="width:'+(+maxWidth)+'px;height:'+(+maxHeight)+'px;position:absolute;left:'+parentOffsetWidth+'px;top:'+parentOffsetHeight+'px;border:0;" frameborder="0" id="childFrame" onload="parent.postMessage(JSON.stringify({clickbandit:1}),\'*\')"><\/iframe>');
 		html += '<body>\n';
 		html += '<div id="container" style="clip-path:none;clip:auto;overflow:visible;position:absolute;left:0;top:0;width:100%;height:100%">\n';
@@ -121,7 +121,7 @@
 		}
 		html += '</div>\n';
 		function generateClickArea(pos) {
-			var elementWidth, elementHeight, x, y, parentFrame = document.getElementById('parentFrame'), desiredX = 200, desiredY = 200, parentOffsetWidth, parentOffsetHeight, docWidth, docHeight, 
+			var elementWidth, elementHeight, x, y, parentFrame = document.getElementById('parentFrame'), desiredX = 200, desiredY = 200, parentOffsetWidth, parentOffsetHeight, docWidth, docHeight,
 				btn = document.getElementById('clickjack_button');
 			if(pos < window.clickbandit.config.clickTracking.length) {
 				clickjackCompleted(false);
@@ -153,15 +153,15 @@
 		}
 		function handleMessages(e){
 			var data;
-			try { 
+			try {
 				data = JSON.parse(e.data);
-			} catch(e){ 
-				data = {}; 
+			} catch(e){
+				data = {};
 			}
-			if(!data.clickbandit) { 
-				return false; 
-			} 
-			showButton(); 
+			if(!data.clickbandit) {
+				return false;
+			}
+			showButton();
 		}
 		function clickjackCompleted(show) {
 			var complete = document.getElementById('clickjack_complete');
@@ -188,7 +188,7 @@
 		html += 'window.addEventListener("message", '+handleMessages+',false);';
 		html += 'window.addEventListener("blur", function(){ if(window.clickbandit.mouseover) { hideButton();setTimeout(function(){ generateClickArea(++window.clickbandit.config.currentPosition);document.getElementById("clickjack_focus").focus();},1000); } }, false);';
 		html += 'document.getElementById("parentFrame").addEventListener("mouseover",function(){ window.clickbandit.mouseover = true; }, false);';
-		html += 'document.getElementById("parentFrame").addEventListener("mouseout",function(){ window.clickbandit.mouseover = false; }, false);';		
+		html += 'document.getElementById("parentFrame").addEventListener("mouseout",function(){ window.clickbandit.mouseover = false; }, false);';
 		html += '<\/script>';
 		html += '<script>';
 		html += 'window.clickbandit={mode: "review", mouseover:false,elementWidth:'+elementWidth+',elementHeight:'+elementHeight+',config:'+JSON.stringify(config)+'};';
@@ -239,7 +239,7 @@
 		}
 		html += '<!-- Configuration -->\n';
 		function toggleTransparency() {
-			var parentFrame=document.getElementById('parentFrame');				
+			var parentFrame=document.getElementById('parentFrame');
 			if(parentFrame.style.opacity === '0.5') {
 				parentFrame.style.opacity=0;
 				calculateClip();
@@ -336,7 +336,7 @@
 		html += '<li><a href="#" onclick="generateClickArea(window.clickbandit.config.currentPosition=0);this.href=\'data:text/html;base64,\'+btoa(document.body.innerHTML.replace(/<![-]{2} Configuration [-]{2}>[\\d\\D]+$/,\'\'))" download="clickjacked.html" class="btn">Save</a></li>';
 		html += '</ul>';
 		html += '</body>';
-		self.location = 'data:text/html;base64,'+btoa(html);
+		document.write(html);
 	}
 	function start() {
 		var frame = document.getElementById('clickbandit_frame');
@@ -366,11 +366,11 @@
 		}
 	}
 	function interceptClicks() {
-		var elements, i;		
+		var elements, i;
 		elements = doc.querySelectorAll('iframe,embed,object,applet');
 		for(i=0;i<elements.length;i++) {
 			addClickTrap(elements[i]);
-		}	
+		}
 		win.addEventListener('click', function(e) {
 			var element = e.target || e.srcElement;
 			if(element.clickTrap || element === document.body) {
@@ -381,7 +381,7 @@
 				e.preventDefault();
 				e.stopPropagation();
 				return false;
-			}	
+			}
 		}, true);
 	}
 	function removeNodes(node) {
@@ -408,7 +408,7 @@
 		anchor.target = '_blank';
 		anchor.appendChild(clickBanditLogo);
 		logoContainer.appendChild(anchor);
-		header.appendChild(logoContainer);		
+		header.appendChild(logoContainer);
 		bar.style.backgroundColor = '#f4983b';
 		bar.style.width = '100%';
 		bar.style.height = '10px';
@@ -418,12 +418,12 @@
 		help.href = '#';
 		help.onclick = function() {
 			var contents = '<style>'+generateCssString()+'body{margin:10px;}</style>', win;
-			contents += '<p style="float:right"><a href="#" onclick="self.close()" class="btn">Close</a></p>';			
+			contents += '<p style="float:right"><a href="#" onclick="self.close()" class="btn">Close</a></p>';
 			if(window.clickbandit.mode === 'record') {
 				contents += '<h1><span>Record mode</span></h1>';
 				contents += '<p>Burp Clickbandit first loads in record mode. Perform one or more mouse clicks to record your clickjacking attack. Typically, this will involve performing the mouse clicks that the victim user needs to perform to carry out some desired action.</p>';
 				contents += '<p>By default, as clicks are recorded, they are also handled in the normal way by the target page. You can use the "disable click actions" checkbox to record clicks without the target page handling them.</p>';
-				contents += '<p>When you have finished recording, click the "Finish" button to enter review mode.</p>';	
+				contents += '<p>When you have finished recording, click the "Finish" button to enter review mode.</p>';
 			} else {
 				contents += '<h1><span>Review Mode</span></h1>';
 				contents += '<p>When you have finished recording your attack, Burp Clickbandit enters review mode. This lets you review the generated attack, with the attack UI overlaid on the original page UI. You can click the buttons on the attack UI to verify that the attack works.</p>';
@@ -436,7 +436,8 @@
     			contents += '<li>You can use the keyboard arrow keys to reposition the attack UI if is not correctly aligned with the original page UI.</li>';
     			contents += '</ul>';
 			}
-			win = window.open('data:text/html;base64,'+btoa(contents),'help','width=500,height=500');
+			win = window.open('about:blank','help','width=500,height=500');
+			win.document.write(contents);
 		};
 		help.className = 'btn';
 		help.style.position = 'absolute';
@@ -459,7 +460,7 @@
 		var div = document.createElement('div'), div2 = document.createElement('div');
 		div.style.position = 'absolute';
 		div.style.left = '210px';
-		div.style.top = '25px';	
+		div.style.top = '25px';
 		div.style.backgroundColor = '#fff';
 		div.style.color = '#000';
 		div.innerHTML = '<form><ul id="menu"><li><a href="#" class="btn" onclick="clickbandit.finish();return false;">Finish</a></li></ul></form>';
@@ -560,14 +561,14 @@
 		iframe.onload = function() {
 			win = this.contentWindow;
 			doc = win.document;
-			interceptClicks();	
+			interceptClicks();
 		};
 		iframe.contentWindow.location = location+'';
 		start();
-	} 
+	}
 	window.clickbandit = {mode: 'record', finish: finish, version: "1.0", disableClickActions: false};
 	window.addEventListener('DOMContentLoaded', ready, false);
-	if(document.readyState === 'complete') { 
+	if(document.readyState === 'complete') {
 		ready();
 	}
 }();
