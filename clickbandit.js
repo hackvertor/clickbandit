@@ -342,6 +342,8 @@
 		var frame = document.getElementById('clickbandit_frame');
 		if(window.clickbandit.sandbox) {
 			frame.sandbox = 'allow-same-origin ' + document.getElementById('sandboxIframeInput').value;
+		} else {
+			frame.removeAttribute('sandbox');
 		}
 		win = frame.contentWindow;
 		doc = win.document;
