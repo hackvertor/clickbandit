@@ -1,7 +1,7 @@
 /* Copyright PortSwigger Ltd. All rights reserved. Usage is subject to the Burp Suite license terms. See https://portswigger.net for more details. */
 !function(){
 	var initialZoomFactor = '1.0', win, doc, width, height, clicks = [];
-	function addClickTrap(element) {
+	function addClickTrap(element, minusY) {
 		var clickTrap = doc.createElement('div'), cords = findPos(element);
 		clickTrap.style.backgroundColor = 'none';
 		clickTrap.style.border = 'none';
@@ -17,7 +17,7 @@
 		clickTrap.style.cursor = 'pointer';
 		clickTrap.clickTrap = 1;
 		clickTrap.addEventListener('click', function(e) {
-			generatePoc({x:e.pageX, y: e.pageY});
+			generatePoc({x:e.pageX, y: minusY?e.pageY-minusY : e.page});
 			e.preventDefault();
 			e.stopPropagation();
 			return false;
@@ -26,9 +26,9 @@
 	}
 	function addMessage(msg) {
 		var message = document.createElement('div');
-		message.style.width = '100%';
-		message.style.height = '20px';
-		message.style.backgroundColor = '#fff5bf';
+			message.style.width = '100%';
+			message.style.height = '20px';
+			message.style.backgroundColor = '#fff5bf';
     	message.style.border = '1px solid #ff9900';
     	message.style.padding = '5px';
     	message.style.position = 'fixed';
@@ -101,7 +101,7 @@
 				y = cords[1];
 				zoomIncrement = 1;
 			} else {
-				zoomIncrement = 50;
+				zoomIncrement = 5;
 				pixelMode = true;
 			}
 		}
@@ -333,7 +333,7 @@
 		html += '<li><a href="#" onclick="zoom('+zoomIncrement+');return false;" class="btn">+</a></li>';
 		html += '<li><a href="#" onclick="toggleTransparency();return false;" class="btn">Toggle transparency<\/a></li>';
 		html += '<li><a href="#" onclick="self.location=self.location;return false;" class="btn">Reset<\/a></li>';
-		html += '<li><a href="#" onclick="generateClickArea(window.clickbandit.config.currentPosition=0);this.href=\'data:text/html;base64,\'+btoa(document.body.innerHTML.replace(/<![-]{2} Configuration [-]{2}>[\\d\\D]+$/,\'\'))" download="clickjacked.html" class="btn">Save</a></li>';
+		html += '<li><a href="#" onclick="generateClickArea(window.clickbandit.config.currentPosition=0);document.getElementById(\'clickjack_complete\').style.display=\'none\';this.href=\'data:text/html;base64,\'+btoa(document.body.innerHTML.replace(/<![-]{2} Configuration [-]{2}>[\\d\\D]+$/,\'\'))" download="clickjacked.html" class="btn">Save</a></li>';
 		html += '</ul>';
 		html += '</body>';
 		document.write(html);
@@ -342,6 +342,11 @@
 		var frame = document.getElementById('clickbandit_frame');
 		if(window.clickbandit.sandbox) {
 			frame.sandbox = 'allow-same-origin ' + document.getElementById('sandboxIframeInput').value;
+			if(!/allow-scripts/i.test(document.getElementById('sandboxIframeInput').value)) {
+					win = window;
+					doc = document;
+					addClickTrap(frame, 70);
+			}
 		} else {
 			frame.removeAttribute('sandbox');
 		}
@@ -571,7 +576,7 @@
 			interceptClicks();
 		};
 	}
-	window.clickbandit = {start: start, mode: 'record', finish: finish, version: "1.0.2", disableClickActions: false, sandbox: false};
+	window.clickbandit = {start: start, mode: 'record', finish: finish, version: "1.0.3", disableClickActions: false, sandbox: false};
 	window.addEventListener('DOMContentLoaded', ready, false);
 	if(document.readyState === 'complete') {
 		ready();
