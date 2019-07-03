@@ -325,14 +325,14 @@
 			}
 		}
 		html += '<script>';
-		html += addMessage+createStyles+generateCssString+createHeader+toggleTransparency+zoom+transform+moveIframe+';document.addEventListener("keydown",moveIframe,false);addMessage("Use the controls on the right to control the zoom and transparency.");createStyles(document, document.body);createHeader(document, document.body);';
+		html += addMessage+createStyles+generateCssString+createHeader+toggleTransparency+zoom+transform+moveIframe+';document.addEventListener("keydown",moveIframe,false);addMessage("Use the controls above to control the zoom and transparency.");createStyles(document, document.body);createHeader(document, document.body);';
 		html += '<\/script>';
 		html += '<style>#menu { position:absolute;left:210px;top:25px;z-index:10000;font-family:Arial;margin:0;padding:0;list-style:none; } #menu li {float:left;margin-right:5px;}</style>';
 		html += '<ul id="menu">';
 		html += '<li><a href="#" onclick="zoom('+(zoomIncrement*-1)+');return false;" class="btn">-</a></li>';
 		html += '<li><a href="#" onclick="zoom('+zoomIncrement+');return false;" class="btn">+</a></li>';
 		html += '<li><a href="#" onclick="toggleTransparency();return false;" class="btn">Toggle transparency<\/a></li>';
-		html += '<li><a href="#" onclick="self.location=self.location;return false;" class="btn">Reset<\/a></li>';
+		html += '<li><a href="#" onclick="self.location.reload();return false;" class="btn">Reset<\/a></li>';
 		html += '<li><a href="#" onclick="generateClickArea(window.clickbandit.config.currentPosition=0);document.getElementById(\'clickjack_complete\').style.display=\'none\';this.href=\'data:text/html;base64,\'+btoa(document.body.innerHTML.replace(/<![-]{2} Configuration [-]{2}>[\\d\\D]+$/,\'\'))" download="clickjacked.html" class="btn">Save</a></li>';
 		html += '</ul>';
 		html += '</body>';
@@ -576,7 +576,7 @@
 			interceptClicks();
 		};
 	}
-	window.clickbandit = {start: start, mode: 'record', finish: finish, version: "1.0.4", disableClickActions: false, sandbox: false};
+	window.clickbandit = {start: start, mode: 'record', finish: finish, version: "1.0.5", disableClickActions: false, sandbox: false};
 	window.addEventListener('DOMContentLoaded', ready, false);
 	if(document.readyState === 'complete') {
 		ready();
