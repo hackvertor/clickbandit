@@ -241,7 +241,7 @@
 		function toggleTransparency() {
 			var parentFrame=document.getElementById('parentFrame');
 			if(parentFrame.style.opacity === '0.5') {
-				parentFrame.style.opacity=0;
+				parentFrame.style.opacity=0.0001;
 				calculateClip();
 			} else {
 				parentFrame.style.opacity=0.5;
@@ -576,7 +576,7 @@
 			interceptClicks();
 		};
 	}
-	window.clickbandit = {start: start, mode: 'record', finish: finish, version: "1.0.3", disableClickActions: false, sandbox: false};
+	window.clickbandit = {start: start, mode: 'record', finish: finish, version: "1.0.4", disableClickActions: false, sandbox: false};
 	window.addEventListener('DOMContentLoaded', ready, false);
 	if(document.readyState === 'complete') {
 		ready();
